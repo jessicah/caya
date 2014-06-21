@@ -21,7 +21,7 @@ enum CayaRenderViewColors {
 
 enum {
 	R_URL = 0,
-	R_TEXT,	
+	R_TEXT,
 	R_TIMESTAMP,
 	R_ACTION,
 	R_EMOTICON,
@@ -29,27 +29,28 @@ enum {
 	MAX_RENDERS
 };
 
-class CayaRenderView : public RunView 
+class CayaRenderView : public RunView
 {
 	public:
 				CayaRenderView(const char* name, const char* smileyConfig = NULL);
-		
+
 		void	AppendOtherMessage(const char* message);
 		void	AppendOwnMessage(const char* message);
 		void 	AddEmoticText(const char * txt,  int16 cols , int16 font , int16 cols2 , int16 font2);
-		
-		void	SetOwnNick(BString nick) { fOwnNick = nick; } 
-		void	SetOtherNick(BString nick) { fOtherNick = nick; }	
-		
+
+		void	SetOwnNick(BString nick) { fOwnNick = nick; }
+		void	SetOtherNick(BString nick) { fOtherNick = nick; }
+
 	protected:
 		void	PrepareTheme(Theme* theme);
-	
+
 	private:
 		BString	fOwnNick;
 		BString	fOtherNick;
 		Theme* fTheme;
 		SmileTextRender	str;
-	
+		bool lastWasMe;
+
 };
 
 #endif

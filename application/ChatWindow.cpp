@@ -43,7 +43,7 @@ ChatWindow::ChatWindow(ContactLinker* cl)
 		fContactLinker(cl)
 {
 	fMessageCount = 0;
-	
+
 	fReceiveView = new CayaRenderView("fReceiveView");
 	fReceiveView->SetOtherNick(cl->GetName());
 	BScrollView* scrollViewReceive = new BScrollView("scrollviewR",
@@ -69,6 +69,7 @@ ChatWindow::ChatWindow(ContactLinker* cl)
 
 	fStatus = new BStringView("status", "");
 	fStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+	AppendStatus(cl->GetNotifyStatus());
 
 	fAvatar = new BitmapView("ContactIcon");
 	fAvatar->SetExplicitMaxSize(BSize(50, 50));
@@ -191,21 +192,21 @@ ChatWindow::ImMessage(BMessage* msg)
 			fReceiveView->AppendOtherMessage(message.String());
 
 			// Message received, clear status anyway
-			fStatus->SetText("");
-			
+			//fStatus->SetText("");
+
 			if (IsActive()) break;
-			
+
 			fMessageCount++;
-		
-			// Mark unread window			
-			if (CayaPreferences::Item()->MarkUnreadWindow) { 
+
+			// Mark unread window
+			if (CayaPreferences::Item()->MarkUnreadWindow) {
 				BString title = "[";
 				title<<fMessageCount;
 				title<<"] ";
 				title<<fContactLinker->GetName();
 				SetTitle(title);
 			}
-			
+
 			// Check if the user want the notification
 			if (!CayaPreferences::Item()->NotifyNewMessage)
 				break;
@@ -227,19 +228,19 @@ ChatWindow::ImMessage(BMessage* msg)
 			notification.SetContent(notify_message);
 			notification.SetMessageID(fContactLinker->GetName());
 			notification.Send();
-			
+
 			break;
 		}
 		case IM_CONTACT_STARTED_TYPING:
-			fStatus->SetText("Contact is typing...");
+			//fStatus->SetText("Contact is typing...");
 			break;
 		case IM_CONTACT_STOPPED_TYPING:
-			fStatus->SetText("");
+			//fStatus->SetText("");
 			break;
 		case IM_CONTACT_GONE:
-			fStatus->SetText("Contact closed the chat window!");
-			snooze(10000);
-			fStatus->SetText("");
+			//fStatus->SetText("Contact closed the chat window!");
+			//snooze(10000);
+			//fStatus->SetText("");
 			break;
 		default:
 			break;
@@ -322,9 +323,11 @@ ChatWindow::AppendStatus(CayaStatus status)
 			break;
 	}
 
-	fReceiveView->Append(message.String(), COL_TEXT, COL_TEXT, R_TEXT);
+	fStatus->SetText(message);
+
+	/*fReceiveView->Append(message.String(), COL_TEXT, COL_TEXT, R_TEXT);
  	fReceiveView->Append("\n", COL_TEXT, COL_TEXT, R_TEXT);
-	fReceiveView->ScrollToSelection();
+	fReceiveView->ScrollToSelection();*/
 }
 
 

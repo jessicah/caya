@@ -61,7 +61,7 @@ MainWindow::MainWindow()
 {
 	fStatusView = new StatusView("statusView");
 
-	SearchBarTextControl* searchBox = 
+	SearchBarTextControl* searchBox =
 		new SearchBarTextControl(new BMessage(kSearchContact));
 
 	fListView = new RosterListView("buddyView");
@@ -125,12 +125,14 @@ MainWindow::Start()
 bool
 MainWindow::QuitRequested()
 {
-	fListView->MakeEmpty();
+	/*fListView->MakeEmpty();
 	fServer->Quit();
 	CayaPreferences::Get()->Save();
 	ReplicantStatusView::RemoveReplicant();
 	be_app->PostMessage(B_QUIT_REQUESTED);
-	return true;
+	return true;*/
+	Hide();
+	return false;
 }
 
 
@@ -144,7 +146,7 @@ MainWindow::MessageReceived(BMessage* message)
 			if (message->FindPointer("source", &control) != B_OK)
 				return;
 
-			SearchBarTextControl* searchBox 
+			SearchBarTextControl* searchBox
 				= static_cast<SearchBarTextControl*>(control);
 			if (searchBox == NULL)
 				return;
@@ -195,8 +197,8 @@ MainWindow::MessageReceived(BMessage* message)
 		{
 			if (LockLooper()) {
 				SetWorkspaces(B_CURRENT_WORKSPACE);
-				
-				if ((IsMinimized() || IsHidden()) 
+
+				if ((IsMinimized() || IsHidden())
 					|| fWorkspaceChanged) {
 					Minimize(false);
 					Show();
@@ -379,10 +381,10 @@ void
 MainWindow::AddItem(RosterItem* item)
 {
 	// Don't add offline items and avoid duplicates
-	if ((item->Status() == CAYA_OFFLINE) 
+	if ((item->Status() == CAYA_OFFLINE)
 		&& CayaPreferences::Item()->HideOffline)
 		return;
-	
+
 	if (HasItem(item))
 		return;
 

@@ -13,6 +13,8 @@ CayaRenderView::CayaRenderView(const char *name,  const char* smileyConfig)
 
 	PrepareTheme(fTheme);
 
+	lastWasMe = true;
+
 	SetViewColor(245, 245, 245, 0);
 	SetLowColor(245, 245, 245, 0);
 	SetHighColor(0, 0, 0, 0);
@@ -27,8 +29,11 @@ CayaRenderView::CayaRenderView(const char *name,  const char* smileyConfig)
 void
 CayaRenderView::AppendOtherMessage(const char* message)
 {
-	Append(fOtherNick.String(), COL_OTHERNICK, COL_OTHERNICK, R_TEXT);
-	Append(": ", COL_OTHERNICK, COL_OTHERNICK, R_TEXT);
+	if (lastWasMe) {
+		Append(fOtherNick.String(), COL_OTHERNICK, COL_OTHERNICK, R_TEXT);
+		Append(": ", COL_OTHERNICK, COL_OTHERNICK, R_TEXT);
+		lastWasMe = false;
+	}
 	AddEmoticText(message, COL_TEXT, R_TEXT, COL_TEXT,R_EMOTICON);
 	Append("\n", COL_TEXT, COL_TEXT, R_TEXT);
 	ScrollToSelection();
@@ -37,7 +42,10 @@ CayaRenderView::AppendOtherMessage(const char* message)
 void
 CayaRenderView::AppendOwnMessage(const char* message)
 {
-	Append("You say: ", COL_OWNNICK, COL_OWNNICK, R_TEXT);
+	if (!lastWasMe || LineCount() == 0) {
+		Append("Me: ", COL_OWNNICK, COL_OWNNICK, R_TEXT);
+		lastWasMe = true;
+	}
 	AddEmoticText(message, COL_TEXT, R_TEXT,COL_TEXT,R_EMOTICON);
 	Append("\n", COL_TEXT, COL_TEXT, R_TEXT);
 	ScrollToSelection();
